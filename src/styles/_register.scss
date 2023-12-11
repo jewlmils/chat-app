@@ -1,0 +1,42 @@
+.regContainer {
+  form {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+
+      input {
+        padding: 0.8rem;
+        width: 18rem;
+        border: 1px solid #c4c4c4;
+      }
+
+      .error {
+        margin-top: 0.5rem;
+        color: red;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  button {
+    background-color: #588157;
+    border-radius: 8px;
+    border-style: none;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    height: 2.5rem;
+    outline: none;
+    padding: 10px 16px;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+}

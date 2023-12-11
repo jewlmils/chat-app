@@ -1,0 +1,13 @@
+@use "styles/reset";
+@use "styles/register";
+
+//* font
+@font-face {
+  font-family: myFont;
+  src: url(@assets/Sprinkle-Regular.ttf);
+}
+
+body {
+  font-family: myFont;
+  background-color: #f8edeb;
+}
