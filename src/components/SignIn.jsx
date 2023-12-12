@@ -40,6 +40,7 @@ export function SignIn() {
           localStorage.setItem("user-info", JSON.stringify(data));
           console.log("succ", res);
           navigate("/main");
+          toast.success("Login Successfull!");
         }
       })
       .catch((err) => {

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,6 +19,7 @@ const validationSchema = yup.object({
 });
 
 export function SignUp() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -32,37 +33,47 @@ export function SignUp() {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("data", data);
-    axios
-      .post("http://206.189.91.54/api/v1/auth/", data, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      })
-      .then((res) => {
-        //! refactor this! working but still not right.
-        const { data: userData, headers, status } = res;
-        if (status === 200) {
-          ["access-token", "client", "expiry", "uid"].forEach((key) =>
-            localStorage.getItem(key, headers[key])
-          );
-          localStorage.setItem("user-info", JSON.stringify(userData));
-          console.log("success", res);
+  const onSubmit = async (userData) => {
+    try {
+      const res = await axios.post(
+        "http://206.189.91.54/api/v1/auth/",
+        userData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      })
-      .catch((regErr) => {
-        console.log("Error during registration:", regErr.message);
-        if (regErr.response.data.errors) {
-          const errorMessage = regErr.response.data.errors[0];
-          toast.error(errorMessage);
-        }
-      });
+      );
+
+      const headers = res.headers;
+      const accessToken = headers["access-token"];
+      const client = headers.client;
+      const expiry = headers.expiry;
+      const uid = headers.uid;
+
+      localStorage.setItem("access-token", accessToken);
+      localStorage.setItem("client", client);
+      localStorage.setItem("expiry", expiry);
+      localStorage.setItem("uid", uid);
+
+      localStorage.setItem("userInfo", JSON.stringify(res.data));
+      navigate("/main");
+      toast.success("Registered Successfully!");
+    } catch (errReg) {
+      if (errReg?.response?.data?.errors) {
+        const errorMsgs = errReg.response.data.errors.full_messages;
+        errorMsgs.forEach((errorMsg) => {
+          toast.error(errorMsg);
+        });
+      } else {
+        toast.error("Unknown Error");
+      }
+    }
   };
 
   return (
     <div className="register">
+      <ToastContainer />
       <div className="regContainer">
         <form onSubmit={handleSubmit(onSubmit)}>
           <h1>Sign up</h1>
@@ -101,7 +112,6 @@ export function SignUp() {
             Already have an account? <Link to="/">Sign In</Link>
           </p>
         </form>
-        <ToastContainer />
       </div>
     </div>
   );
