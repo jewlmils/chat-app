@@ -45,20 +45,9 @@ export function SignUp() {
         }
       );
 
-      const headers = res.headers;
-      const accessToken = headers["access-token"];
-      const client = headers.client;
-      const expiry = headers.expiry;
-      const uid = headers.uid;
-
-      localStorage.setItem("access-token", accessToken);
-      localStorage.setItem("client", client);
-      localStorage.setItem("expiry", expiry);
-      localStorage.setItem("uid", uid);
-
       localStorage.setItem("userInfo", JSON.stringify(res.data));
-      navigate("/main");
-      toast.success("Registered Successfully!");
+      navigate("/");
+      toast.success("Registered Successfully! Please Login :) ");
     } catch (errReg) {
       if (errReg?.response?.data?.errors) {
         const errorMsgs = errReg.response.data.errors.full_messages;
@@ -66,7 +55,7 @@ export function SignUp() {
           toast.error(errorMsg);
         });
       } else {
-        toast.error("Unknown Error");
+        console.error("Unknown Error", errReg);
       }
     }
   };
